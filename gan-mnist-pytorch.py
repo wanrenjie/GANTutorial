@@ -117,6 +117,7 @@ Tensor = torch.cuda.FloatTensor if cuda else torch.FloatTensor
 # ----------
 #  Training
 # ----------
+global_iter = 0
 
 for epoch in range(opt.n_epochs):
     for i, (imgs, _) in enumerate(dataloader):
@@ -160,10 +161,13 @@ for epoch in range(opt.n_epochs):
         d_loss.backward()
         optimizer_D.step()
 
-        print(
-            "[Epoch %d/%d] [Batch %d/%d] [D loss: %f] [G loss: %f]"
-            % (epoch, opt.n_epochs, i, len(dataloader), d_loss.item(), g_loss.item())
-        )
+        global_iter = global_iter + 1
+
+        if global_iter % 100 == 0:
+            print(
+                "[Epoch %d/%d] [Batch %d/%d] [D loss: %f] [G loss: %f]"
+                % (epoch, opt.n_epochs, i, len(dataloader), d_loss.item(), g_loss.item())
+            )
 
         batches_done = epoch * len(dataloader) + i
         if batches_done % opt.sample_interval == 0:
